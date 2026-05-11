@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Compass | HVAC Distribution Intelligence Hub</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',system-ui,sans-serif;background:#F8F4EE;min-height:100vh;color:#2C2C2C}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .skeleton{height:12px;background:#F0EDE8;border-radius:6px;margin-bottom:8px;animation:pulse 1.5s ease-in-out infinite}
+  .spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block;vertical-align:middle;margin-right:6px}
+
+  /* HERO */
+  #hero{background:linear-gradient(135deg,#1B3A6B 0%,#0F2347 100%);padding:44px 24px 36px;text-align:center;position:relative;overflow:hidden}
+  #hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 20% 80%,rgba(232,168,56,.18) 0%,transparent 50%),radial-gradient(circle at 80% 20%,rgba(59,130,246,.12) 0%,transparent 50%);pointer-events:none}
+  .hero-inner{position:relative}
+  .brand-badge{display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,.12);padding:6px 18px;border-radius:24px;margin-bottom:18px;backdrop-filter:blur(8px)}
+  .brand-name{color:#E8A838;font-size:15px;font-weight:800;letter-spacing:.5px}
+  .brand-sub{color:rgba(255,255,255,.5);font-size:12px}
+  #hero h1{color:#fff;font-size:26px;font-weight:900;margin-bottom:10px;letter-spacing:-.5px;line-height:1.2}
+  #hero p{color:rgba(255,255,255,.72);font-size:13px;max-width:460px;margin:0 auto 24px;line-height:1.65}
+  .hero-meta{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap}
+  #last-updated{font-size:12px;color:rgba(255,255,255,.45)}
+  .btn-amber{background:#E8A838;color:#1B3A6B;border:none;padding:9px 24px;border-radius:24px;font-size:13px;font-weight:700;cursor:pointer;transition:opacity .2s}
+  .btn-amber:hover{opacity:.88}
+  .btn-outline{background:transparent;border:1px solid currentColor;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;transition:opacity .2s}
+  .btn-outline:hover{opacity:.7}
+  .btn-outline:disabled{opacity:.4;cursor:not-allowed}
+
+  /* LAYOUT */
+  .container{max-width:900px;margin:0 auto;padding:36px 20px}
+  .section{margin-bottom:48px}
+  .section-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+  .section-title{font-size:19px;font-weight:800;color:#1B3A6B;margin-bottom:3px}
+  .section-sub{font-size:12px;color:#6B7280}
+
+  /* CARDS BASE */
+  .card{background:#fff;border-radius:12px;padding:18px;border:1px solid #E5E0D8;margin-bottom:10px}
+  .card:last-child{margin-bottom:0}
+
+  /* NEWS */
+  .card-news{border-left-width:4px}
+  .news-headline{font-size:13px;font-weight:700;color:#1B3A6B;margin-bottom:6px;line-height:1.35}
+  .news-summary{font-size:12px;color:#4B5563;margin-bottom:10px;line-height:1.55}
+  .news-footer{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap}
+  .badge{display:inline-block;font-size:11px;padding:3px 10px;border-radius:20px;font-weight:600;line-height:1.4}
+  .news-source{font-size:10px;color:#9CA3AF;padding-top:4px;white-space:nowrap}
+
+  /* STATS GRID */
+  .stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:12px}
+  .card-stat{border-top-width:4px;text-align:center}
+  .stat-number{font-size:30px;font-weight:900;color:#1B3A6B;margin-bottom:4px}
+  .stat-metric{font-size:12px;font-weight:600;color:#374151;margin-bottom:6px}
+  .stat-impl{font-size:11px;color:#6B7280;margin-bottom:8px;line-height:1.45}
+  .stat-source{font-size:10px;color:#9CA3AF}
+
+  /* PE */
+  .card-pe{border-left-width:4px}
+  .pe-header{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+  .pe-companies{font-size:13px;font-weight:700;color:#1B3A6B}
+  .pe-desc{font-size:12px;color:#4B5563;margin-bottom:10px;line-height:1.55}
+  .pe-impact{font-size:11px;background:#FFFBEB;color:#92400E;padding:8px 12px;border-radius:8px;line-height:1.45}
+  .pe-impact strong{font-weight:700}
+
+  /* WORKFORCE */
+  .card-wf{border-left-width:4px}
+  .wf-header{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px}
+  .wf-finding{font-size:13px;font-weight:700;color:#1B3A6B}
+  .wf-datapoint{font-size:13px;font-weight:800;padding:2px 10px;border-radius:20px;white-space:nowrap}
+  .wf-context{font-size:12px;color:#4B5563;margin-bottom:8px;line-height:1.55}
+  .wf-impl{font-size:11px;color:#D97706;font-weight:600}
+
+  /* COMPASS HELPS */
+  .helps-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:12px}
+  .card-help{border-top:4px solid #E8A838}
+  .help-pain{font-size:10px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+  .help-insight{font-size:12px;color:#4B5563;margin-bottom:10px;line-height:1.55;font-style:italic}
+  .help-solution{font-size:12px;color:#1B3A6B;font-weight:600;line-height:1.55}
+
+  /* SKELETON */
+  .skel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:12px}
+  .skel-card{background:#fff;border-radius:12px;padding:20px;border:1px solid #E5E0D8}
+  .skel-wide{width:70%}
+  .skel-full{width:100%}
+  .skel-med{width:85%}
+
+  /* ERROR */
+  .error-box{background:#FEF2F2;border:1px solid #FECACA;border-radius:12px;padding:20px;text-align:center;color:#DC2626;font-size:13px}
+  .btn-link{color:#DC2626;font-weight:700;background:none;border:none;cursor:pointer;text-decoration:underline;font-size:13px}
+
+  /* FOOTER CTA */
+  .footer-cta{background:linear-gradient(135deg,#1B3A6B,#0F2347);border-radius:16px;padding:38px 24px;text-align:center}
+  .footer-cta h3{color:#fff;font-size:18px;font-weight:800;margin-bottom:8px}
+  .footer-cta p{color:rgba(255,255,255,.7);font-size:13px;max-width:420px;margin:0 auto 24px;line-height:1.6}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div id="hero">
+  <div class="hero-inner">
+    <div class="brand-badge">
+      <span class="brand-name">🧭 COMPASS</span>
+      <span class="brand-sub">by EBM / BlueOps</span>
+    </div>
+    <h1>HVAC Distribution Intelligence Hub</h1>
+    <p>Your industry, decoded. Live insights on the trends, moves, and forces shaping HVAC distribution — curated for the people running the channel.</p>
+    <div class="hero-meta">
+      <span id="last-updated">Loading live data...</span>
+      <button class="btn-amber" onclick="fetchAll()">↻ Refresh All</button>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="container">
+
+  <!-- INDUSTRY NEWS -->
+  <div class="section" id="section-news">
+    <div class="section-header">
+      <div>
+        <div class="section-title">📰 Industry News &amp; Trends</div>
+        <div class="section-sub">What's moving the needle right now</div>
+      </div>
+      <button class="btn-outline" id="btn-news" style="color:#1D4ED8;border-color:#3B82F6" onclick="fetchSection('news')">↻ Refresh</button>
+    </div>
+    <div id="content-news"><div class="skel-grid" id="skel-news"></div></div>
+  </div>
+
+  <!-- MARKET STATS -->
+  <div class="section" id="section-stats">
+    <div class="section-header">
+      <div>
+        <div class="section-title">📊 Key Market Stats</div>
+        <div class="section-sub">Numbers that drive decisions</div>
+      </div>
+      <button class="btn-outline" id="btn-stats" style="color:#15803D;border-color:#22C55E" onclick="fetchSection('stats')">↻ Refresh</button>
+    </div>
+    <div id="content-stats"></div>
+  </div>
+
+  <!-- PE CONSOLIDATION -->
+  <div class="section">
+    <div class="section-header">
+      <div>
+        <div class="section-title">🏢 PE Consolidation &amp; Big Moves</div>
+        <div class="section-sub">Who's buying, merging, and disrupting</div>
+      </div>
+      <button class="btn-outline" id="btn-pe" style="color:#6D28D9;border-color:#8B5CF6" onclick="fetchSection('pe')">↻ Refresh</button>
+    </div>
+    <div id="content-pe"></div>
+  </div>
+
+  <!-- WORKFORCE -->
+  <div class="section">
+    <div class="section-header">
+      <div>
+        <div class="section-title">👷 Technician Shortage Insights</div>
+        <div class="section-sub">The workforce gap shaping the whole channel</div>
+      </div>
+      <button class="btn-outline" id="btn-workforce" style="color:#C2410C;border-color:#F97316" onclick="fetchSection('workforce')">↻ Refresh</button>
+    </div>
+    <div id="content-workforce"></div>
+  </div>
+
+  <!-- HOW COMPASS HELPS -->
+  <div class="section">
+    <div class="section-title" style="margin-bottom:4px">🧭 How Compass Helps</div>
+    <div class="section-sub" style="margin-bottom:14px">Connecting industry pain to practical solutions</div>
+    <div class="helps-grid" id="compass-helps"></div>
+  </div>
+
+  <!-- FOOTER CTA -->
+  <div class="footer-cta">
+    <h3>Ready to put this intelligence to work?</h3>
+    <p>Compass by EBM/BlueOps turns market insight into sales motion — built for HVAC distributors who want to win the channel.</p>
+    <button class="btn-amber" style="font-size:14px;padding:12px 30px">Connect with the Compass Team →</button>
+  </div>
+
+</div>
+
+<script>
+const COLORS = {
+  news:      { border:"#3B82F6", badge:"#DBEAFE", badgeText:"#1D4ED8" },
+  stats:     { border:"#22C55E", badge:"#DCFCE7", badgeText:"#15803D" },
+  pe:        { border:"#8B5CF6", badge:"#EDE9FE", badgeText:"#6D28D9" },
+  workforce: { border:"#F97316", badge:"#FFEDD5", badgeText:"#C2410C" }
+};
+
+const SECTIONS = {
+  news: {
+    prompt:`Search for 3-4 of the most important HVAC distribution industry news stories and trends from 2025-2026. Return ONLY a raw JSON array. No preamble, no backticks, no markdown. Each object must have exactly: headline (string), summary (2 sentences max, string), source (publication name, string), whyItMatters (1 sentence impact on HVAC distributors, string).`
+  },
+  stats: {
+    prompt:`Search for 4-5 current HVAC distribution market statistics for 2025-2026 (market size, growth, pricing, channel trends). Return ONLY a raw JSON array. No preamble, no backticks, no markdown. Each object must have exactly: stat (specific number or %, string), metric (what it measures, 5-8 words, string), source (string), implication (1 sentence for distributors, string).`
+  },
+  pe: {
+    prompt:`Search the web for recent mergers, acquisitions, private equity investments, or major ownership changes involving HVAC distributors or HVAC distribution companies in 2024-2026. Find 3 examples. You MUST return ONLY a JSON array — nothing before it, nothing after it, no explanation, no backticks, no markdown. Start your entire response with [ and end with ]. Each object must have exactly these four string fields: companies, dealType, description, impactOnIndependents. Example of required format: [{"companies":"Company A acquired Company B","dealType":"Acquisition","description":"Two sentence description here.","impactOnIndependents":"One sentence on what this means for independent distributors."}]`
+  },
+  workforce: {
+    prompt:`Search for 3-4 current findings on the HVAC technician shortage and workforce challenges in 2025-2026. Return ONLY a raw JSON array. No preamble, no backticks, no markdown. Each object must have exactly: finding (4-7 word title, string), dataPoint (key number or fact, string), context (2 sentences, string), implication (1 sentence impact on HVAC distributors, string).`
+  }
+};
+
+const COMPASS_HELPS = [
+  { painPoint:"Market Visibility Gaps", insight:"Distributors lack real-time data on what's moving, what's stalling, and where margin is leaking.", compassRole:"Compass surfaces account-level intelligence so your team always knows where to focus — before revenue walks out the door." },
+  { painPoint:"PE-Backed Competitor Pressure", insight:"Consolidated rivals have deeper pockets, better tech, and faster fulfillment cycles.", compassRole:"Compass gives independent distributors enterprise-grade sales intelligence without the enterprise overhead." },
+  { painPoint:"Technician Shortage Ripple Effects", insight:"Fewer techs mean slower installs, longer sales cycles, and contractors who need more hand-holding.", compassRole:"Compass helps reps understand contractor pain at a deeper level — turning consultative selling into a competitive edge." },
+  { painPoint:"A2L Transition Complexity", insight:"R-410A install bans and new refrigerant requirements are creating confusion and hesitation across the channel.", compassRole:"Compass equips your team with the talking points and customer-specific context to guide contractors through the transition confidently." }
+];
+
+// Render Compass Helps (static)
+const helpsEl = document.getElementById('compass-helps');
+COMPASS_HELPS.forEach(h => {
+  helpsEl.innerHTML += `
+    <div class="card card-help">
+      <div class="help-pain">${h.painPoint}</div>
+      <div class="help-insight">"${h.insight}"</div>
+      <div class="help-solution">→ ${h.compassRole}</div>
+    </div>`;
+});
+
+function showSkeleton(id) {
+  const el = document.getElementById(`content-${id}`);
+  el.innerHTML = `<div class="skel-grid">${[1,2,3].map(()=>`
+    <div class="skel-card">
+      <div class="skeleton skel-wide"></div>
+      <div class="skeleton skel-full"></div>
+      <div class="skeleton skel-med"></div>
+    </div>`).join('')}</div>`;
+}
+
+function setBtn(id, loading) {
+  const btn = document.getElementById(`btn-${id}`);
+  if (!btn) return;
+  btn.disabled = loading;
+  btn.innerHTML = loading ? `<span class="spinner"></span>Refreshing...` : '↻ Refresh';
+}
+
+async function fetchSection(id) {
+  setBtn(id, true);
+  showSkeleton(id);
+  const c = COLORS[id];
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        tools:[{type:'web_search_20250305',name:'web_search'}],
+        system:'You are an HVAC industry analyst. Respond with ONLY a valid raw JSON array — no preamble, no markdown, no code fences.',
+        messages:[{role:'user',content:SECTIONS[id].prompt}]
+      })
+    });
+    const data = await res.json();
+    const txt = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('').trim();
+    const match = txt.match(/\[[\s\S]*\]/);
+    if (!match) throw new Error('No JSON array found');
+    const items = JSON.parse(match[0]);
+    renderSection(id, items, c);
+  } catch(e) {
+    document.getElementById(`content-${id}`).innerHTML =
+      `<div class="error-box">Could not load data. <button class="btn-link" onclick="fetchSection('${id}')">Try again</button></div>`;
+  }
+  setBtn(id, false);
+}
+
+function renderSection(id, items, c) {
+  const el = document.getElementById(`content-${id}`);
+  if (id === 'stats') {
+    el.innerHTML = `<div class="stats-grid">${items.map(i=>`
+      <div class="card card-stat" style="border-top-color:${c.border}">
+        <div class="stat-number">${esc(i.stat)}</div>
+        <div class="stat-metric">${esc(i.metric)}</div>
+        <div class="stat-impl">${esc(i.implication)}</div>
+        <div class="stat-source">Source: ${esc(i.source)}</div>
+      </div>`).join('')}</div>`;
+    return;
+  }
+  el.innerHTML = items.map(i => {
+    if (id==='news') return `
+      <div class="card card-news" style="border-left-color:${c.border}">
+        <div class="news-headline">${esc(i.headline)}</div>
+        <div class="news-summary">${esc(i.summary)}</div>
+        <div class="news-footer">
+          <span class="badge" style="background:${c.badge};color:${c.badgeText}">📌 ${esc(i.whyItMatters)}</span>
+          <span class="news-source">via ${esc(i.source)}</span>
+        </div>
+      </div>`;
+    if (id==='pe') return `
+      <div class="card card-pe" style="border-left-color:${c.border}">
+        <div class="pe-header">
+          <span class="badge" style="background:${c.badge};color:${c.badgeText}">${esc(i.dealType)}</span>
+          <span class="pe-companies">${esc(i.companies)}</span>
+        </div>
+        <div class="pe-desc">${esc(i.description)}</div>
+        <div class="pe-impact"><strong>For independents: </strong>${esc(i.impactOnIndependents)}</div>
+      </div>`;
+    if (id==='workforce') return `
+      <div class="card card-wf" style="border-left-color:${c.border}">
+        <div class="wf-header">
+          <span class="wf-finding">${esc(i.finding)}</span>
+          <span class="wf-datapoint" style="background:${c.badge};color:${c.badgeText}">${esc(i.dataPoint)}</span>
+        </div>
+        <div class="wf-context">${esc(i.context)}</div>
+        <div class="wf-impl">↳ ${esc(i.implication)}</div>
+      </div>`;
+  }).join('');
+}
+
+function esc(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function fetchAll() {
+  const now = new Date();
+  document.getElementById('last-updated').textContent =
+    `Last updated: ${now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}`;
+  Object.keys(SECTIONS).forEach(fetchSection);
+}
+
+fetchAll();
+</script>
+</body>
+</html>
